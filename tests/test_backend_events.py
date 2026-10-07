@@ -102,6 +102,8 @@ def test_codex_command_uses_specific_resume(job):
     assert args[-1] == "-"
     assert "--json" in args
     assert "--ignore-user-config" in args and "--ignore-rules" in args
+    assert "model_providers.mathmodel.request_max_retries=0" in args
+    assert "model_providers.mathmodel.stream_max_retries=0" in args
     assert "OPENAI_API_KEY" not in " ".join(args)
     with pytest.raises(ValueError):
         agent.command(job, "--last")

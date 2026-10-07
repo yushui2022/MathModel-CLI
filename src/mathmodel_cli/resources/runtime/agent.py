@@ -18,6 +18,8 @@ def command(job: dict, session_id: str | None) -> list[str]:
         "model_providers.mathmodel.wire_api": "responses",
         "model_providers.mathmodel.requires_openai_auth": False,
         "model_providers.mathmodel.supports_websockets": False,
+        "model_providers.mathmodel.request_max_retries": 0,
+        "model_providers.mathmodel.stream_max_retries": 0,
         "model_reasoning_effort": engine["effort"],
         "approval_policy": "never",
         # Docker supplies the external sandbox; never use this launcher on the host.

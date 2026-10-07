@@ -28,6 +28,12 @@ def test_model_pin_and_hosted_tools(proxy):
     assert json.loads(body)["store"] is False
 
 
+def test_compaction_does_not_add_create_only_parameters(proxy):
+    suffix, body = proxy.checked_request("/v1/responses/compact", b'{"model":"m","input":[]}', "m")
+    assert suffix == "/responses/compact"
+    assert json.loads(body) == {"model": "m", "input": []}
+
+
 @pytest.mark.parametrize("ip", ["127.0.0.1", "10.0.0.1", "169.254.169.254", "::1", "192.168.1.1"])
 def test_private_dns_rejected(proxy, monkeypatch, ip):
     monkeypatch.setattr(proxy.socket, "getaddrinfo", lambda *a, **k: [(2, 1, 6, "", (ip, 443))])

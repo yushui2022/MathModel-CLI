@@ -59,3 +59,4 @@ and a tested migration contract for completed/paused tasks.
 References: [Codex noninteractive mode](https://learn.chatgpt.com/docs/non-interactive-mode),
 [Docker run](https://docs.docker.com/engine/containers/run/),
 [Docker internal networks](https://docs.docker.com/reference/cli/docker/network/create/).
+Provider retry options follow the [pinned Codex provider schema](https://github.com/openai/codex/blob/rust-v0.160.1/codex-rs/model-provider-info/src/lib.rs).

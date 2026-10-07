@@ -44,8 +44,9 @@ def checked_request(path: str, body: bytes, model: str) -> tuple[str, bytes]:
     for tool in value.get("tools", []):
         if not isinstance(tool, dict) or tool.get("type") not in ("function", "custom"):
             raise ValueError("hosted tools are disabled")
-    for key in ("background", "store"):
-        value[key] = False
+    if path == "/v1/responses":
+        for key in ("background", "store"):
+            value[key] = False
     return path.removeprefix("/v1"), json.dumps(value, ensure_ascii=False).encode("utf-8")
 
 
