@@ -57,6 +57,16 @@ class Relay(BaseHTTPRequestHandler):
         pass
 
     def reject(self, code: int):
+        # Drain small rejected bodies before closing, avoiding TCP resets that hide the status on Windows.
+        if self.command == "POST" and not getattr(self, "body_read", False):
+            lengths = self.headers.get_all("Content-Length", [])
+            try:
+                length = int(lengths[0]) if len(lengths) == 1 else 0
+                if not self.headers.get("Transfer-Encoding") and 0 < length <= 65536:
+                    self.connection.settimeout(1)
+                    self.rfile.read(length)
+            except (OSError, ValueError):
+                pass
         self.send_response(code)
         self.send_header("Content-Length", "0")
         self.send_header("Connection", "close")
@@ -84,6 +94,7 @@ class Relay(BaseHTTPRequestHandler):
             if not 0 < length <= MAX_BODY:
                 raise ValueError("request too large")
             body = self.rfile.read(length)
+            self.body_read = True
             if len(body) != length:
                 raise ValueError("incomplete body")
             suffix, body = checked_request(self.path, body, self.server.model)
